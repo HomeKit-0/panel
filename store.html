@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Store - HomeKit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Store</h1>
+  <label>Username: <input type="text" id="storeUser"></label>
+  <button onclick="loadUserPoints()">Load Points</button>
+  <p id="userPoints"></p>
+  <div id="storeItems">
+    <button onclick="buyItem(50)">Buy Lamp (50 pts)</button>
+    <button onclick="buyItem(100)">Buy Speaker (100 pts)</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

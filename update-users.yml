@@ -6,29 +6,36 @@ on:
       username:
         description: 'Username to update'
         required: true
+        type: string
       newPoints:
         description: 'New points value'
         required: true
+        type: number
 
 jobs:
   update:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout the repo
+        uses: actions/checkout@v3
 
-    - name: Modify users.json
-      run: |
-        jq --arg user "${{ github.event.inputs.username }}" \
-           --argjson pts "${{ github.event.inputs.newPoints }}" \
-           '.[$user].points = $pts' users.json > tmp.json && mv tmp.json users.json
+      - name: Set up jq
+        run: sudo apt-get install jq
 
-    - name: Commit and push
-      run: |
-        git config user.name "github-actions"
-        git config user.email "github-actions@github.com"
-        git add users.json
-        git commit -m "Update points for ${{ github.event.inputs.username }}"
-        git push
-      env:
-        GH_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Update users.json
+        run: |
+          echo "Updating ${{ github.event.inputs.username }} to ${{ github.event.inputs.newPoints }} points"
+          jq --arg user "${{ github.event.inputs.username }}" \
+             --argjson pts "${{ github.event.inputs.newPoints }}" \
+             '.[$user].points = $pts' users.json > tmp.json && mv tmp.json users.json
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add users.json
+          git commit -m "Updated points for ${{ github.event.inputs.username }}"
+          git push
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}

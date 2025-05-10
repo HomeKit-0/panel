@@ -1,21 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Store - HomeKit</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Store</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    .item { margin: 1rem 0; }
+  </style>
 </head>
 <body>
   <h1>Store</h1>
-  <label>Username: <input type="text" id="storeUser"></label>
-  <button onclick="loadUserPoints()">Load Points</button>
-  <p id="userPoints"></p>
-  <div id="storeItems">
-    <button onclick="buyItem(50)">Buy Lamp (50 pts)</button>
-    <button onclick="buyItem(100)">Buy Speaker (100 pts)</button>
+  <form id="loginForm">
+    <label for="user">Username:</label>
+    <input type="text" id="user" required />
+    <label for="pass">Password:</label>
+    <input type="password" id="pass" required />
+    <button type="submit">Login</button>
+  </form>
+  <div id="store" style="display:none;">
+    <p>Points: <span id="points"></span></p>
+    <div class="item">
+      <strong>Cool Lamp</strong> – 30 pts
+      <button onclick="buy('Cool Lamp', 30)">Buy</button>
+    </div>
+    <div class="item">
+      <strong>Smart Plug</strong> – 50 pts
+      <button onclick="buy('Smart Plug', 50)">Buy</button>
+    </div>
   </div>
+  <script>
+    let currentUser = null;
+    let users = {};
+    fetch('users.json')
+      .then(res => res.json())
+      .then(data => users = data);
 
-  <script src="script.js"></script>
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('user').value;
+      const p = document.getElementById('pass').value;
+      if (users[u] && users[u].password === p) {
+        currentUser = u;
+        document.getElementById('points').textContent = users[u].points;
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('store').style.display = 'block';
+      } else {
+        alert("Invalid credentials");
+      }
+    });
+
+    function buy(item, cost) {
+      if (!currentUser) return;
+      const confirmPass = prompt("Re-enter password to confirm purchase:");
+      if (confirmPass !== users[currentUser].password) {
+        alert("Incorrect password.");
+        return;
+      }
+      if (users[currentUser].points < cost) {
+        alert("Not enough points.");
+        return;
+      }
+      users[currentUser].points -= cost;
+      document.getElementById('points').textContent = users[currentUser].points;
+      alert(`Purchased ${item} for ${cost} points.`);
+    }
+  </script>
 </body>
 </html>

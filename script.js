@@ -36,3 +36,34 @@ async function authAdmin() {
     alert("Wrong password");
   }
 }
+function buy(item, cost) {
+    // Check if the user has enough points
+    if (users[currentUser].points >= cost) {
+        // Deduct points from the user
+        users[currentUser].points -= cost;
+
+        // Update the points display
+        document.getElementById('points').textContent = users[currentUser].points;
+
+        // Send the updated data to the backend (which triggers GitHub Action)
+        fetch('https://your-backend-url.com/update-users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                updatedUsers: users // Send the updated users object
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(`Purchased ${item} for ${cost} points.`);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update your points.');
+        });
+    } else {
+        alert('Insufficient points!');
+    }
+}

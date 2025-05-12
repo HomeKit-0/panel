@@ -25,7 +25,7 @@ function buy(item, cost) {
   const updatedJSON = JSON.stringify(users, null, 2);
   const base64 = btoa(unescape(encodeURIComponent(updatedJSON)));
 
-  fetch("https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/actions/workflows/update-users.yml/dispatches", {
+  fetch("https://api.github.com/repos/homekit-0/panel/actions/workflows/update-users.yml/dispatches", {
     method: "POST",
     headers: {
       Authorization: "Bearer YOUR_GITHUB_PAT",

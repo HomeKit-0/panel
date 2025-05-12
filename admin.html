@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Update</title>
+</head>
+<body>
+  <h2>Update users.json</h2>
+  <textarea id="jsonInput" rows="10" cols="50">
+{
+  "alice": { "password": "1234", "points": 90 },
+  "bob": { "password": "abcd", "points": 70 }
+}
+  </textarea><br><br>
+  <button onclick="updateUsers()">Update Users</button>
+
+  <script>
+    async function updateUsers() {
+      const json = document.getElementById("jsonInput").value;
+      const base64 = btoa(unescape(encodeURIComponent(json)));
+
+      const response = await fetch("https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/actions/workflows/update-users.yml/dispatches", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer YOUR_GITHUB_PAT",
+          Accept: "application/vnd.github.v3+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ref: "main",
+          inputs: {
+            data: base64
+          }
+        })
+      });
+
+      if (response.ok) {
+        alert("Update triggered!");
+      } else {
+        alert("Failed: " + response.statusText);
+      }
+    }
+  </script>
+</body>
+</html>

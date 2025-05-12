@@ -1,0 +1,10 @@
+{
+  "alice": {
+    "password": "1234",
+    "points": 100
+  },
+  "bob": {
+    "password": "abcd",
+    "points": 80
+  }
+}
